@@ -1,9 +1,12 @@
-def read_instance_students(file):
+import os
+
+def read_instance_students(path,file):
+
     ex = set()  # set of all exames
     stud = set()  # set of all students
     ex_stud = dict()  # dictonary : key exam value list of students enrolled
 
-    raw_lines = open(file, 'r', encoding="utf-8").read().splitlines()
+    raw_lines = open(os.path.join(path,file),'r', encoding="utf-8").read().splitlines()
 
     for line in raw_lines:
 
@@ -62,8 +65,9 @@ def read_instance_students(file):
 
     return list(ex), list(stud), n, len(ex), len(stud), enrollements, density
 
-def read_instance_slot(file):
-    time_slots = int(open(file, 'r', encoding="utf-8").read().splitlines()[0])
+def read_instance_slot(path,file):
+
+    time_slots = int(open(os.path.join(path,file), 'r', encoding="utf-8").read().splitlines()[0])
 
     time_slots_list = [x for x in range(1, time_slots + 1)]
 
