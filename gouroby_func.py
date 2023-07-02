@@ -45,6 +45,49 @@ def model(Exames, Timeslots, Distances, Distance_Parameters, Conflict_Dictionary
 
     m.addConstrs((sum(x[e, j] for j in Timeslots) == 1 for e in Exames),f"At_most_in_one_Timeslot_Constraints")
 
-    print("Setting At_most_in_one_Timeslot_Constraints")
+    print("Setting Conflicting_Exames_Timeslot_Constraints")
+
+    m.addConstrs((x[e, j] + x[k, j] <= 1 for e in Exames
+                                         for k in Exames if e != k
+                                                         and Conflict_Dictionary[e, k] > 0
+                                         for j in Timeslots),
+                  "Conflicting_Exames_Timeslot_Constraints")
+
+    print("Setting Linking X and Y Constraints")
+
+    #  if y[e,j,k,d] = 1  ===> x[e,j] = 1 and x[k,j+d] = 1
+
+    print('-----First Family')
+
+    m.addConstrs((y[e, j, k, d] <= x[e, j] for e in Exames
+                                           for k in Exames if e != k
+                                           for j in Timeslots
+                                           for d in Distances if j + d <= max(Timeslots)),
+                  'Linking_x-y_Constraints_Family_1')
+
+    print('-----Second Family')
+
+    m.addConstrs((y[e,j,k,d] <= x[k,j+d]   for e in Exames
+                                           for k in Exames if e != k
+                                           for j in Timeslots
+                                           for d in Distances if j + d <= max(Timeslots)),
+                  'Linking_x-y_Constraints_Family_2')
+
+    print('-----Third Family')
+
+    m.addConstrs((y[e,j,k,d] >= x[e,j] + x[k,j+d] - 1   for e in Exames
+                                                        for k in Exames if e != k
+                                                        for j in Timeslots
+                                                        for d in Distances if j + d <= max(Timeslots)),
+                  'Linking_x-y_Constraints_Family_3')
+
+    print('Optimizing.....')
+
+    m.optimize()
+
+    print('Writing Solutions')
+
+    m.write("Exames timetable scheduling.lp")
+    m.write("Exames timetable scheduling.sol")
 
     return m
