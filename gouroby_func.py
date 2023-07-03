@@ -3,7 +3,17 @@ from gurobipy import GRB
 
 def model(Exames, Timeslots, Distances, Distance_Parameters, Conflict_Dictionary,Number_of_Students):
 
-    m = gp.Model("The Examination Timetabling Problem")
+    env = gp.Env(empty=True)
+
+    env.start()
+
+    env.setParam("Presolve", 2)
+
+    env.setParam("MIPGap", 1e-4)
+
+    env.setParam("TimeLimit", 600)
+
+    m = gp.Model("The Examination Timetabling Problem", env = env)
 
     print("Setting Variables")
 
