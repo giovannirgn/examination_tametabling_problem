@@ -5,9 +5,9 @@ from path import path_instances
 
 
 Exam_list, Student_list, Conflict_Dictionary, n_exams,\
-n_students, enrollements, density = read_instance_students(path_instances, 'test.stu')
+n_students, enrollements, density = read_instance_students(path_instances, 'instance01.stu')
 
-Timeslots, Timeslots_list = read_instance_slot(path_instances, 'test.slo')
+Timeslots, Timeslots_list = read_instance_slot(path_instances, 'instance01.slo')
 
 Distances_list = distances(Timeslots)
 
