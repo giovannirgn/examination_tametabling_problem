@@ -1,5 +1,9 @@
 import gurobipy as gp
 from gurobipy import GRB
+from load_instances import read_instance_students, read_instance_slot
+from utils import distances, distance_param_cost
+from path import path_instances
+
 
 def model(Exames, Timeslots, Distances, Distance_Parameters, Conflict_Dictionary,Number_of_Students):
 
@@ -7,11 +11,12 @@ def model(Exames, Timeslots, Distances, Distance_Parameters, Conflict_Dictionary
 
     env.start()
 
-    env.setParam("Presolve", 2)
+    #env.setParam("Presolve", 2)
 
-    env.setParam("MIPGap", 1e-4)
+    #env.setParam("MIPGap", 1e-4)
 
-    env.setParam("TimeLimit", 600)
+    env.setParam("TimeLimit", 5000
+                 )
 
     m = gp.Model("The Examination Timetabling Problem", env = env)
 
@@ -99,5 +104,21 @@ def model(Exames, Timeslots, Distances, Distance_Parameters, Conflict_Dictionary
 
     m.write("Exames timetable scheduling.lp")
     m.write("Exames timetable scheduling.sol")
+
+    return m
+
+
+def solve(instance):
+
+    Exam_list, Student_list, Conflict_Dictionary, n_exams, \
+    n_students, enrollements, density = read_instance_students(path_instances, f'{instance}.stu')
+
+    Timeslots, Timeslots_list = read_instance_slot(path_instances, f'{instance}.slo')
+
+    Distances_list = distances(Timeslots)
+
+    Distance_Parameters = distance_param_cost(Distances_list, 5)
+
+    m = model(Exam_list, Timeslots_list, Distances_list, Distance_Parameters, Conflict_Dictionary, n_students)
 
     return m
