@@ -1,1 +1,1 @@
-path_instances = 'instances'
+path_instances = 'test'
